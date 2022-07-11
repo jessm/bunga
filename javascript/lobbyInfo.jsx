@@ -15,7 +15,7 @@ const LobbyInfo = (props) => {
       <div className="card-content">
         <div className="field">
           <div className="control">
-            <button className="button is-primary" onClick={handleStartGame}>Start Game</button>
+            <button className="button is-success" onClick={handleStartGame}>Start Game</button>
           </div>
         </div>
         <div className="content">
@@ -24,10 +24,17 @@ const LobbyInfo = (props) => {
               <p>Players</p>
             </div>
             {
-              Object.keys(props.lobbyState.Players).map((player) => {
+              props.lobbyState.Players.map((player) => {
                 return (
                   <div key={player} className="panel-block">
                     <div className="control">{player}</div>
+                    <div className="field">
+                      <div className="control">
+                        <div className="button is-static is-small">
+                          Points: {props.lobbyState.Scores[player]}
+                        </div>
+                      </div>
+                    </div>
                   </div>
                 )
               })

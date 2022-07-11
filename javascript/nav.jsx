@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom'
 
 const Nav = (props) => {
   return (
-    <nav className="level is-mobile has-background-primary mb-0">
+    <nav className="level is-mobile has-background-success mb-0">
       <div className="level-left">
         <Link to="/" className="card-header-title">Bunga</Link>
         { props.showHelp &&

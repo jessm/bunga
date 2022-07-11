@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"math/rand"
+	"sort"
 	"strconv"
 	"strings"
 )
@@ -174,12 +175,9 @@ func (b *bunga) initPlayerHands() {
 }
 
 func (b *bunga) initPlayerOrder() {
-	order := []string{}
-	for player, _ := range b.lobby.Players {
-		order = append(order, player)
-	}
-	rand.Shuffle(len(order), func(i, j int) {
-		order[i], order[j] = order[j], order[i]
+	order := b.lobby.Players
+	sort.Slice(order, func(i, j int) bool {
+		return b.lobby.Scores[order[i]] > b.lobby.Scores[order[j]]
 	})
 	b.state.PlayerOrder = order
 }
@@ -580,7 +578,10 @@ func (b *bunga) movePlayingState(msg userMsg) {
 			notSpecialTypes := map[byte]struct{}{
 				'A': {}, '2': {}, '3': {}, '4': {}, '5': {}, '6': {}, 'K': {},
 			}
-			if len(b.state.PlayerOrder) < 2 && b.state.SaidBunga != "" {
+			// if it's less than 2 players, these aren't special cards
+			// if someone said bunga and there's less than 3 players,
+			// they'd have noone to affect, so they're not special cards
+			if len(b.state.PlayerOrder) < 2 || (len(b.state.PlayerOrder) < 3 && b.state.SaidBunga != "") {
 				for _, t := range []byte{'9', 'T', 'J', 'Q'} {
 					notSpecialTypes[t] = struct{}{}
 				}

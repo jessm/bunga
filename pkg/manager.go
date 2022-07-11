@@ -6,6 +6,7 @@ import (
 	"math/rand"
 	"net/http"
 	"sync"
+	"time"
 )
 
 type NewLobbyResp struct {
@@ -88,6 +89,7 @@ func handleValid(w http.ResponseWriter, r *http.Request) {
 
 func randName() string {
 	letters := []byte("abcdefghjkmnopqrstuvwxyz")
+	rand.Seed(time.Now().UnixNano())
 	rand.Shuffle(len(letters), func(i, j int) {
 		letters[i], letters[j] = letters[j], letters[i]
 	})

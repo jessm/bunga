@@ -3,6 +3,7 @@ package main
 import (
 	"encoding/json"
 	"fmt"
+	"sort"
 	"sync"
 	"time"
 )
@@ -25,7 +26,8 @@ type lobbyMsg struct {
 
 type lobbyState struct {
 	Status  string
-	Players map[string]struct{}
+	Players []string
+	Scores  map[string]int
 }
 
 // A lobby has:
@@ -58,26 +60,22 @@ func (l *lobby) broadcastState() {
 	l.userLock.Unlock()
 }
 
-func (l *lobby) getUserList() []string {
-	i := 0
-	ret := make([]string, len(l.users))
-	for key := range l.users {
-		ret[i] = key
-	}
-	return ret
-}
-
 // Add user function:
 // - set user's webToLobby channel
 // - lock mutex
 // - add user to list
 // - release mutex
 func (l *lobby) addUser(u *user) {
+	// if the user id is already in the lobby it's probably a reload, so clear the old connection
+	if _, ok := l.users[u.id]; ok {
+		l.removeUser(u.id)
+	}
 	u.webToLobby = l.webToLobby
 	u.endConn = l.userEndConn
 	l.userLock.Lock()
 	l.users[u.id] = u
-	l.state.Players[u.id] = struct{}{}
+	l.state.Players = append(l.state.Players, u.id)
+	l.state.Scores[u.id] = 0
 	l.userLock.Unlock()
 	l.broadcastState()
 	if l.g != nil {
@@ -91,8 +89,14 @@ func (l *lobby) addUser(u *user) {
 // - release mutex
 func (l *lobby) removeUser(id string) {
 	l.userLock.Lock()
-	// for each team, if the user is in the team, remove the user
-	delete(l.state.Players, id)
+	idx := 0
+	for i, player := range l.state.Players {
+		if player == id {
+			idx = i
+		}
+	}
+	l.state.Players = append(l.state.Players[:idx], l.state.Players[idx+1:]...)
+	delete(l.state.Scores, id)
 	delete(l.users, id)
 	l.userLock.Unlock()
 	l.broadcastState()
@@ -108,7 +112,8 @@ func createLobby(name string, done chan string) lobby {
 		name: name,
 		state: lobbyState{
 			Status:  "lobby",
-			Players: make(map[string]struct{}),
+			Players: make([]string, 0),
+			Scores:  make(map[string]int),
 		},
 		users:       make(map[string]*user),
 		done:        done,
@@ -129,6 +134,17 @@ func (l *lobby) handleStartGame() {
 }
 
 func (l *lobby) handleQuitGame() {
+	// add scores to lobby state
+	bunga, _ := l.g.(*bunga)
+	if bunga != nil {
+		for player, score := range bunga.state.Scores {
+			l.state.Scores[player] += score
+		}
+	}
+	// sort players by scores, ascending
+	sort.Slice(l.state.Players, func(i, j int) bool {
+		return l.state.Scores[l.state.Players[i]] < l.state.Scores[l.state.Players[j]]
+	})
 	l.g = nil
 	l.lobbyToGame = nil
 	l.gameToLobby = nil

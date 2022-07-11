@@ -13,8 +13,9 @@ const Lobby = () => {
 
   // Save lobby state in the component
   const [lobbyState, setLobbyState] = useState({
-    Players: {},
+    Players: [],
     Status: "lobby",
+    Scores: {},
   })
 
   const [gameState, setGameState] = useState(null)
@@ -31,17 +32,17 @@ const Lobby = () => {
     const wsUri = encodeURI(`ws://localhost:3111/joinLobby?user=${user}&lobby=${lobby}`)
     wsRef.current = new WebSocket(wsUri)
     wsRef.current.onopen = () => {
-      console.log('Connected!')
+      // console.log('Connected!')
     }
     wsRef.current.onmessage = (event) => {
       let msg = JSON.parse(event.data)
       let newState = msg.State
       if (msg.Target == 'lobby') {
-        console.log('new lobby state:', newState)
+        // console.log('new lobby state:', newState)
         setLobbyState(newState)
         setGameState(null)
       } else if (msg.Target == 'game') {
-        console.log('new game state:', newState)
+        // console.log('new game state:', newState)
         setGameState(newState)
       }
     }

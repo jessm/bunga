@@ -192,7 +192,7 @@ const Bunga = (props) => {
       loader.add(card, cardUrl)
     })
     loader.load((loader, resources) => {
-      console.log('loaded!')
+      // console.log('loaded!')
       cards.forEach((card) => {
         cardTexturesRef.current[card] = resources[card].texture
       })
@@ -216,7 +216,7 @@ const Bunga = (props) => {
     cardWidth = 0.106 * screenHeight
     uiPadd = 0.5 * cardHeight
     return () => {
-      console.log('deleting pixijs app')
+      // console.log('deleting pixijs app')
       appRef.current.destroy()
       appRef.current = null
     }
@@ -224,7 +224,7 @@ const Bunga = (props) => {
 
   let redrawBoard = () => {
     if (!resourcesLoaded) {
-      console.log('spinning')
+      // console.log('spinning')
       let spinner = new PIXI.Container()
       let g = new PIXI.Graphics()
       g.lineStyle(10, 0xffffff, 1)
@@ -249,7 +249,7 @@ const Bunga = (props) => {
       appRef.current.stage.addChild(spinner)
       return
     }
-    console.log('redrawing cards')
+    // console.log('redrawing cards')
     appRef.current.stage.destroy({ children: true })
     appRef.current.stage = new PIXI.Container()
     playerOrder = props.gameState.PlayerOrder
@@ -298,7 +298,7 @@ const Bunga = (props) => {
       bungaContainer.addChild(bungaText)
       bungaContainer.interactive = true
       bungaContainer.on('pointerdown', () => {
-        console.log('bunga pressed')
+        // console.log('bunga pressed')
         sendCommand(props.ws, 'game', 'bunga', { 'player': props.user })
       })
       bungaContainer.x = getHandPositions(screenWidth, 4)[0]
@@ -315,7 +315,7 @@ const Bunga = (props) => {
     sprite.x = getHandPositions(screenWidth, 4)[1]
     sprite.y = getDrawPileY(screenHeight)
     sprite.on('pointerdown', () => {
-      console.log('drawing card...')
+      // console.log('drawing card...')
       sendCommand(props.ws, 'game', 'draw', { 'player': props.user })
     })
     appRef.current.stage.addChild(sprite)
@@ -326,7 +326,7 @@ const Bunga = (props) => {
     sprite.x = getHandPositions(screenWidth, 4)[2]
     sprite.y = getDrawPileY(screenHeight)
     sprite.on('pointerdown', () => {
-      console.log('discard pile clicked')
+      // console.log('discard pile clicked')
       sendCommand(props.ws, 'game', 'discard', { 'player': props.user })
     })
     appRef.current.stage.addChild(sprite)
@@ -334,12 +334,12 @@ const Bunga = (props) => {
     // redraw players' hands
     Object.entries(props.gameState.PlayerHands).forEach(entry => {
       const [player, hand] = entry
-      console.log('drawing hand for', player, 'hand: ', hand)
+      // console.log('drawing hand for', player, 'hand: ', hand)
       let handPositions = getHandPositions(screenWidth, hand.length)
       hand.forEach((card, idx) => {
         let handCard = getCardSprite(cardTexturesRef, card)
         handCard.on('pointerdown', () => {
-          console.log('sending cmd card', props.user, idx)
+          // console.log('sending cmd card', props.user, idx)
           sendCommand(props.ws, 'game', 'card', {
             'index': idx.toString(),
             'owner': player,
@@ -382,7 +382,7 @@ const Bunga = (props) => {
           scoreContainer.y = getOtherHandY(screenHeight, props.gameState.PlayerOrder, props.user, player)
         }
         scoreContainer.y += 0.5 * cardHeight
-        console.log("drawing score container player", player, scoreContainer.y, "user:", props.user)
+        // console.log("drawing score container player", player, scoreContainer.y, "user:", props.user)
         scoreContainer.pivot.x = scoreContainer.width / 2
         scoreContainer.pivot.y = scoreContainer.height / 2
         appRef.current.stage.addChild(scoreContainer)
