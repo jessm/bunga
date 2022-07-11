@@ -1,0 +1,47 @@
+{
+  "name": "bunga",
+  "version": "1.0.0",
+  "description": "Play bunga with friends online",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jessm/bunga.git"
+  },
+  "author": "Jess Muir",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/jessm/bunga/issues"
+  },
+  "homepage": "https://github.com/jessm/bunga#readme",
+  "dependencies": {
+    "bulma": "^0.9.4",
+    "esbuild": "^0.14.48",
+    "npm-watch": "^0.11.0",
+    "pixi.js": "^6.4.2",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-router-dom": "^6.3.0"
+  },
+  "watch": {
+    "build:js": {
+      "patterns": [
+        "javascript"
+      ],
+      "extensions": "jsx,js",
+      "legacyWatch": true
+    },
+    "build:styles": {
+      "patterns": [
+        "styles"
+      ],
+      "extensions": "scss",
+      "legacyWatch": true
+    }
+  },
+  "scripts": {
+    "build": "npm run build:styles && npm run build:js",
+    "build:js": "esbuild javascript/app.jsx --bundle --sourcemap --outfile=assets/build/app.js",
+    "build:js:prod": "esbuild javascript/app.jsx --bundle --minify --outfile=assets/build/app.js",
+    "build:styles": "sass styles/stylesheet.scss assets/build/stylesheet.css",
+    "watch": "npm-watch"
+  }
+}

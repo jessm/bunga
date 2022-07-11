@@ -102,3 +102,9 @@ dist
 
 # TernJS port file
 .tern-port
+
+# Build folder
+build/
+
+# Built assets (e.g. jsx, styles)
+assets/build/*

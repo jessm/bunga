@@ -1,0 +1,11 @@
+// $primary: #a66bc4;
+
+@import "../node_modules/bulma/bulma.sass";
+
+.fullheight {
+  height: 100%;
+}
+
+.restheight {
+  height: calc(100% - 3.0rem);
+}
