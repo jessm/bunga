@@ -29,7 +29,8 @@ const Lobby = () => {
   // don't cleanup until component is unmounted
   useEffect(() => {
     // create socket
-    const wsUri = encodeURI(`ws://localhost:3111/joinLobby?user=${user}&lobby=${lobby}`)
+    const host = window.location.host
+    const wsUri = encodeURI(`ws://${host}/joinLobby?user=${user}&lobby=${lobby}`)
     wsRef.current = new WebSocket(wsUri)
     wsRef.current.onopen = () => {
       // console.log('Connected!')

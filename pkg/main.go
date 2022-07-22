@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"net/http"
+	"os"
 	"text/template"
 )
 
@@ -14,6 +15,8 @@ type LobbyForm struct {
 	Name  string `json:"name"`
 	Lobby string `json:"lobby"`
 }
+
+const listenPortEnv string = "LISTENPORT"
 
 func handleHome(w http.ResponseWriter, r *http.Request) {
 	tmpl := template.Must(template.ParseFiles("templates/home.html"))
@@ -28,6 +31,8 @@ func main() {
 
 	managerInit()
 
+	port := os.Getenv(listenPortEnv)
+
 	fmt.Println("Starting server")
-	http.ListenAndServe(":3111", nil)
+	http.ListenAndServe(":"+port, nil)
 }
