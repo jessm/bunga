@@ -30,7 +30,7 @@ const Lobby = () => {
   useEffect(() => {
     // create socket
     const host = window.location.host
-    const wsUri = encodeURI(`ws://${host}/joinLobby?user=${user}&lobby=${lobby}`)
+    const wsUri = encodeURI(`wss://${host}/joinLobby?user=${user}&lobby=${lobby}`)
     wsRef.current = new WebSocket(wsUri)
     wsRef.current.onopen = () => {
       // console.log('Connected!')
